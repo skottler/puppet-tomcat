@@ -10,6 +10,8 @@ Requires:
 Tested on:
 - Redhat 5.6 (Tikanga)
 - Redhat 6.0 (Santiago)
+- CentOS 5.8
+- CentOS 6.3
 
 Usage:
   include tomcat::redhat
@@ -28,15 +30,14 @@ class tomcat::redhat inherits tomcat::package {
     ]: ensure => present 
   }
 
-  case $lsbdistcodename {
-
-    Tikanga: {
+  case $operatingsystemrelease {
+    /(5.*)/: {
       $tomcat = "tomcat5"
       $tomcat_home = "/var/lib/tomcat5"
 
       # link logging libraries from java
       include tomcat::logging
-     
+
       file {"/usr/share/tomcat5/bin/catalina.sh":
         ensure  => link,
         target  => "/usr/bin/dtomcat5",
@@ -50,7 +51,7 @@ class tomcat::redhat inherits tomcat::package {
 
     }
 
-    Santiago: {
+    /(6.*)/: {
       $tomcat = "tomcat6"
 
       # replaced the /usr/sbin/tomcat6 included script with setclasspath.sh and catalina.sh
@@ -71,7 +72,7 @@ class tomcat::redhat inherits tomcat::package {
         source  => "puppet:///modules/tomcat/catalina.sh-6.0.24",
         require => File["/usr/share/${tomcat}/bin/setclasspath.sh"],
       }
-      
+
       Package["tomcat"] { name => $tomcat }
 
     }

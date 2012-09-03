@@ -42,6 +42,10 @@ class tomcat::params {
         "Tikanga"  => "5.5",
         "Santiago" => "6",
       },
+      "CentOS" => $operatingsystemrelease ? {
+        /(5.*)/ => "5.5",
+        /(6.*)/ => "6"
+      },
       "Ubuntu" => $lsbdistcodename ? {
         "precise" => "6",
       }
